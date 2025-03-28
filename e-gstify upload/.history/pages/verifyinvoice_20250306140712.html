@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ERP GST Invoice System</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --danger-color: #ef4444;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #3b82f6;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            margin-bottom: 24px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: rgba(0, 0, 0, 0.02);
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin: 0;
+        }
+
+        .card-subtitle {
+            color: var(--text-light);
+            font-size: 0.875rem;
+            margin-top: 4px;
+        }
+
+        .card-body {
+            padding: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            transition: border 0.2s ease;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .input-group {
+            display: flex;
+            align-items: center;
+        }
+
+        .input-group-prepend {
+            margin-right: -1px;
+        }
+
+        .input-group-text {
+            display: flex;
+            align-items: center;
+            padding: 10px 12px;
+            background-color: rgba(0, 0, 0, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 4px 0 0 4px;
+            border-right: none;
+            color: var(--text-light);
+        }
+
+        .input-group input {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
+
+        .form-hint {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        .error-feedback {
+            color: var(--danger-color);
+            font-size: 0.8125rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .btn {
+            display: inline-block;
+            font-weight: 500;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: middle;
+            user-select: none;
+            border: 1px solid transparent;
+            padding: 0.5rem 1rem;
+            font-size: 1rem;
+            line-height: 1.5;
+            border-radius: 0.25rem;
+            transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            color: #fff;
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+            border-color: var(--primary-hover);
+        }
+
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+
+        .btn-lg {
+            padding: 0.75rem 1.5rem;
+            font-size: 1.125rem;
+            line-height: 1.5;
+            border-radius: 0.3rem;
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin-left: -12px;
+            margin-right: -12px;
+        }
+
+        .col {
+            flex: 1 0 0%;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .col-12 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        .col-md-6 {
+            flex: 0 0 100%;
+            max-width: 100%;
+            padding-left: 12px;
+            padding-right: 12px;
+        }
+
+        @media (min-width: 768px) {
+            .col-md-6 {
+                flex: 0 0 50%;
+                max-width: 50%;
+            }
+        }
+
+        .alert {
+            position: relative;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+
+        .alert-danger {
+            color: #842029;
+            background-color: #f8d7da;
+            border-color: #f5c2c7;
+        }
+
+        .alert-success {
+            color: #0f5132;
+            background-color: #d1e7dd;
+            border-color: #badbcc;
+        }
+
+        .alert-info {
+            color: #055160;
+            background-color: #cff4fc;
+            border-color: #b6effb;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top: 4px solid var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-text {
+            margin-top: 16px;
+            font-weight: 500;
+        }
+
+        .tab-nav {
+            display: flex;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .tab-item {
+            padding: 10px 16px;
+            border-bottom: 2px solid transparent;
+            cursor: pointer;
+            font-weight: 500;
+            color: var(--text-light);
+            transition: all 0.2s ease;
+        }
+
+        .tab-item.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .result-container {
+            display: none;
+        }
+
+        .invoice-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .invoice-meta {
+            text-align: right;
+        }
+
+        .invoice-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .invoice-number {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .party-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .company-logo {
+            max-width: 150px;
+            max-height: 60px;
+        }
+
+        .party-box {
+            flex: 1;
+            max-width: 48%;
+        }
+
+        .party-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .invoice-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 24px;
+        }
+
+        .invoice-table th {
+            background-color: rgba(0, 0, 0, 0.03);
+            text-align: left;
+            padding: 12px;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        .invoice-table td {
+            padding: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .invoice-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .invoice-total {
+            margin-left: auto;
+            width: 300px;
+        }
+
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .total-row:last-child {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            padding-top: 12px;
+        }
+
+        .save-btn {
+            margin-top: 20px;
+            text-align: right;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .form-instruction {
+            padding: 10px 15px;
+            background-color: #f8fafc;
+            border-left: 4px solid var(--info-color);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h1 class="card-title">ERP GST Invoice System</h1>
+                <p class="card-subtitle">Retrieve Invoice Details from ERP Backend</p>
+            </div>
+            <div class="card-body">
+                <div class="form-instruction">
+                    <p>Please fill in all the required fields below to authenticate with the ERP system and retrieve GST invoice details.</p>
+                </div>
+
+                <div class="tab-nav">
+                    <div class="tab-item active" data-tab="login">Authentication Details</div>
+                    <div class="tab-item" data-tab="gstin">GST Information</div>
+                </div>
+
+                <div id="alertContainer" class="hidden"></div>
+
+                <form id="erpInvoiceForm">
+                    <div id="loginTab" class="tab-content active">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="email">Email Address*</label>
+                                    <input type="email" id="email" name="email" required placeholder="Enter your email address">
+                                    <span class="error-feedback" id="emailError">Please enter a valid email address</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="username">Username*</label>
+                                    <input type="text" id="username" name="username" required placeholder="Enter your username">
+                                    <span class="error-feedback" id="usernameError">Username is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="password">Password*</label>
+                                    <input type="password" id="password" name="password" required placeholder="Enter your password">
+                                    <span class="error-feedback" id="passwordError">Password is required</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="ip_address">IP Address*</label>
+                                    <input type="text" id="ip_address" name="ip_address" required placeholder="Your current IP address">
+                                    <span class="form-hint">Your current IP will be automatically detected</span>
+                                    <span class="error-feedback" id="ipAddressError">Valid IP address is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="client_id">Client ID*</label>
+                                    <input type="text" id="client_id" name="client_id" required placeholder="Enter client ID">
+                                    <span class="error-feedback" id="clientIdError">Client ID is required</span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="client_secret">Client Secret*</label>
+                                    <input type="password" id="client_secret" name="client_secret" required placeholder="Enter client secret">
+                                    <span class="error-feedback" id="clientSecretError">Client secret is required</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="nextBtn" class="btn btn-primary btn-block">Next - Enter GST Details</button>
+                        </div>
+                    </div>
+
+                    <div id="gstinTab" class="tab-content">
+                        <div class="form-group">
+                            <label for="gstin">GSTIN Number*</label>
+                            <input type="text" id="gstin" name="gstin" required placeholder="Enter the 15-digit GSTIN number">
+                            <span class="form-hint">Format: 22AAAAA0000A1Z5</span>
+                            <span class="error-feedback" id="gstinError">Please enter a valid 15-digit GSTIN number</span>
+                        </div>
+
+                        <div class="form-group">
+                            <button type="button" id="prevBtn" class="btn btn-outline">Back to Authentication</button>
+                            <button type="submit" id="submitBtn" class="btn btn-primary" style="float: right;">Fetch Invoice Details</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div id="resultContainer" class="card result-container">
+            <div class="card-header">
+                <h2 class="card-title">Invoice Details</h2>
+                <p class="card-subtitle">Retrieved from ERP System</p>
+            </div>
+            <div class="card-body" id="invoiceResult">
+                <!-- Invoice details will be displayed here -->
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="spinner"></div>
+        <p class="loading-text">Retrieving invoice details from ERP system...</p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Elements
+            const form = document.getElementById('erpInvoiceForm');
+            const tabItems = document.querySelectorAll('.tab-item');
+            const tabContents = document.querySelectorAll('.tab-content');
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const alertContainer = document.getElementById('alertContainer');
+            const loadingOverlay = document.getElementById('loadingOverlay');
+            const resultContainer = document.getElementById('resultContainer');
+            const invoiceResult = document.getElementById('invoiceResult');
+
+            // Form fields
+            const email = document.getElementById('email');
+            const username = document.getElementById('username');
+            const password = document.getElementById('password');
+            const ipAddress = document.getElementById('ip_address');
+            const clientId = document.getElementById('client_id');
+            const clientSecret = document.getElementById('client_secret');
+            const gstin = document.getElementById('gstin');
+
+            // Auto-detect IP address
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    ipAddress.value = data.ip;
+                })
+                .catch(error => {
+                    console.error('Failed to fetch IP:', error);
+                    // Set a placeholder IP in case the API fails
+                    ipAddress.value = '0.0.0.0';
+                });
+
+            // Tab navigation
+            tabItems.forEach(item => {
+                item.addEventListener('click', () => {
+                    const tabId = item.getAttribute('data-tab');
+                    
+                    // If trying to go to GSTIN tab, validate login first
+                    if (tabId === 'gstin' && !validateLoginFields()) {
+                        showAlert('Please fill in all required authentication fields correctly before proceeding.', 'danger');
+                        return;
+                    }
+                    
+                    // Activate tab
+                    tabItems.forEach(tab => tab.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    item.classList.add('active');
+                    document.getElementById(`${tabId}Tab`).classList.add('active');
+                });
+            });
+
+            // Next button handler
+            nextBtn.addEventListener('click', () => {
+                if (validateLoginFields()) {
+                    tabItems.forEach(tab => tab.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.remove('active'));
+                    
+                    tabItems[1].classList.add('active');
+                    document.getElementById('gstinTab').classList.add('active');
+                    hideAlert();
+                } else {
+                    showAlert('Please fill in all required authentication fields correctly before proceeding.', 'danger');
+                }
+            });
+
+            // Previous button handler
+            prevBtn.addEventListener('click', () => {
+                tabItems.forEach(tab => tab.classList.remove('active'));
+                tabContents.forEach(content => content.classList.remove('active'));
+                
+                tabItems[0].classList.add('active');
+                document.getElementById('loginTab').classList.add('active');
+            });
+
+            // Form submission
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                if (validateAllFields()) {
+                    hideAlert();
+                    
+                    // Show loading overlay
+                    loadingOverlay.style.display = 'flex';
+                    
+                    try {
+                        const response = await fetchInvoiceDetails();
+                        
+                        // Hide loading overlay
+                        loadingOverlay.style.display = 'none';
+                        
+                        if (response.success) {
+                            displayInvoiceDetails(response.data);
+                            resultContainer.style.display = 'block';
+                            showAlert('Invoice details successfully retrieved!', 'success');
+                            
+                            // Scroll to result
+                            resultContainer.scrollIntoView({ behavior: 'smooth' });
+                        } else {
+                            showAlert(response.message || 'Failed to retrieve invoice details. Please try again.', 'danger');
+                        }
+                    } catch (error) {
+                        // Hide loading overlay
+                        loadingOverlay.style.display = 'none';
+                        
+                        showAlert('An error occurred while fetching invoice details. Please try again later.', 'danger');
+                        console.error('API Error:', error);
+                    }
+                }
+            });
+
+            // Field validation
+            email.addEventListener('input', () => {
+                validateEmail();
+            });
+
+            username.addEventListener('input', () => {
+                validateUsername();
+            });
+
+            password.addEventListener('input', () => {
+                validatePassword();
+            });
+
+            ipAddress.addEventListener('input', () => {
+                validateIpAddress();
+            });
+
+            clientId.addEventListener('input', () => {
+                validateClientId();
+            });
+
+            clientSecret.addEventListener('input', () => {
+                validateClientSecret();
+            });
+
+            gstin.addEventListener('input', () => {
+                validateGstin();
+            });
+
+            // Validation functions
+            function validateEmail() {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const emailError = document.getElementById('emailError');
+                
+                if (!email.value.trim()) {
+                    emailError.textContent = 'Email address is required';
+                    emailError.style.display = 'block';
+                    return false;
+                } else if (!emailRegex.test(email.value.trim())) {
+                    emailError.textContent = 'Please enter a valid email address';
+                    emailError.style.display = 'block';
+                    return false;
+                } else {
+                    emailError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateUsername() {
+                const usernameError = document.getElementById('usernameError');
+                
+                if (!username.value.trim()) {
+                    usernameError.style.display = 'block';
+                    return false;
+                } else {
+                    usernameError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validatePassword() {
+                const passwordError = document.getElementById('passwordError');
+                
+                if (!password.value.trim()) {
+                    passwordError.style.display = 'block';
+                    return false;
+                } else {
+                    passwordError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateIpAddress() {
+                const ipRegex = /^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+                const ipAddressError = document.getElementById('ipAddressError');
+                
+                if (!ipAddress.value.trim()) {
+                    ipAddressError.textContent = 'IP address is required';
+                    ipAddressError.style.display = 'block';
+                    return false;
+                } else if (!ipRegex.test(ipAddress.value.trim())) {
+                    ipAddressError.textContent = 'Please enter a valid IP address';
+                    ipAddressError.style.display = 'block';
+                    return false;
+                } else {
+                    ipAddressError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateClientId() {
+                const clientIdError = document.getElementById('clientIdError');
+                
+                if (!clientId.value.trim()) {
+                    clientIdError.style.display = 'block';
+                    return false;
+                } else {
+                    clientIdError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateClientSecret() {
+                const clientSecretError = document.getElementById('clientSecretError');
+                
+                if (!clientSecret.value.trim()) {
+                    clientSecretError.style.display = 'block';
+                    return false;
+                } else {
+                    clientSecretError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateGstin() {
+                const gstinRegex = /^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/;
+                const gstinError = document.getElementById('gstinError');
+                
+                if (!gstin.value.trim()) {
+                    gstinError.textContent = 'GSTIN number is required';
+                    gstinError.style.display = 'block';
+                    return false;
+                } else if (!gstinRegex.test(gstin.value.trim())) {
+                    gstinError.textContent = 'Please enter a valid 15-digit GSTIN number';
+                    gstinError.style.display = 'block';
+                    return false;
+                } else {
+                    gstinError.style.display = 'none';
+                    return true;
+                }
+            }
+
+            function validateLoginFields() {
+                return (
+                    validateEmail() &&
+                    validateUsername() &&
+                    validatePassword() &&
+                    validateIpAddress() &&
+                    validateClientId() &&
+                    validateClientSecret()
+                );
+            }
+
+            function validateAllFields() {
+                return validateLoginFields() && validateGstin();
+            }
+
+            // Alert helpers
+            function showAlert(message, type) {
+                alertContainer.innerHTML = `
+                    <div class="alert alert-${type}">
+                        ${message}
+                    </div>
+                `;
+                alertContainer.classList.remove('hidden');
+            }
+
+            function hideAlert() {
+                alertContainer.classList.add('hidden');
+                alertContainer.innerHTML = '';
+            }
+
+            // API Integration
+            async function fetchInvoiceDetails() {
+                // In a real application, you would make an API call to your backend
+                // For demonstration, we'll simulate an API response
+                
+                // Create the request data
+                const requestData = {
+                    email: email.value.trim(),
+                    gstin: gstin.value.trim()
+                };
+                
+                // Set up headers that would normally be sent
+                const headers = {
+                    'username': username.value.trim(),
+                    'password': password.value.trim(),
+                    'ip_address': ipAddress.value.trim(),
+                    'client_id': clientId.value.trim(),
+                    'client_secret': clientSecret.value.trim(),
+                    'gstin': gstin.value.trim()
+                };
+                
+                console.log('API Request Headers:', headers);
+                console.log('API Request Body:', requestData);
+                
+                // Simulate network delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                // For demo: Generate a response based on input GSTIN
+                if (gstin.value.match(/^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[0-9A-Z]{1}[Z]{1}[0-9A-Z]{1}$/)) {
+                    return {
+                        success: true,
+                        message: 'Invoice details retrieved successfully',
+                        data: {
+                            gstDetails: {
+                                gstin: gstin.value,
+                                tradeName: 'SAMPLE BUSINESS ENTERPRISES',
+                                legalName: 'SAMPLE BUSINESS ENTERPRISES PRIVATE LIMITED',
+                                address: '123, BUSINESS PARK, SECTOR 5',
+                                city: 'MUMBAI',
+                                state: 'MAHARASHTRA',
+                                pincode: '400001',
+                                status: 'Active',
+                                lastUpdated: '2025-03-05'
+                            },
+                            invoices: [
+                                {
+                                    invoiceNumber: 'INV-2025-001',
+                                    invoiceDate: '2025-02-28',
+                                    dueDate: '2025-03-30',
+                                    customerName: 'ABC Corporation',
+                                    customerGstin: '29ABCDE1234F1Z5',
+                                    totalAmount: 118000,
+                                    taxableValue: 100000,
+                                    cgst: 9000,
+                                    sgst: 9000,
+                                    igst: 0,
+                                    status: 'Paid',
+                                    items: [
+                                        {
+                                            description: 'IT Consulting Services',
+                                            quantity: 40,
+                                            rate: 2500,
+                                            amount: 100000,
+                                            hsn: '998313'
+                                        }
+                                    ]
+                                },
+                                {
+                                    invoiceNumber: 'INV-2025-002',
+                                    invoiceDate: '2025-03-01',
+                                    dueDate: '2025-04-01',
+                                    customerName: 'XYZ Limited',
+                                    customerGstin: '36PQRST7890U1Z3',
+                                    totalAmount: 47200,
+                                    taxableValue: 40000,
+                                    cgst: 3600,
+                                    sgst: 3600,
+                                    igst: 0,
+                                    status: 'Pending',
+                                    items: [
+                                        {
+                                            description: 'Software Development',
+                                            quantity: 20,
+                                            rate: 2000,
+                                            amount: 40000,
+                                            hsn: '998314'
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    };
+                } else {
+                    return {
+                        success: false,
+                        message: 'Invalid GSTIN or no invoice data found'
+                    };
+                }
+                
+                // In a real application, you would do something like this:
+                /*
+                try {
+                    const response = await fetch('https://your-erp-api.com/gst/invoices', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            ...headers
+                        },
+                        body: JSON.stringify(requestData)
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        return data;
+                    } else {
+                        throw new Error('Failed to fetch data');
+                    }
+                } catch (error) {
+                    console.error('API Error:', error);
+                    return {
+                        success: false,
+                        message: 'Failed to fetch data'
+                    };
+                }
+                */
+            }
+        </script>
